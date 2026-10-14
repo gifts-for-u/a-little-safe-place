@@ -86,19 +86,22 @@ export function openModal(id, triggerElement = null) {
   if (modalSubtitle) modalSubtitle.textContent = msg.subtitle || '';
   if (modalBody) modalBody.textContent = msg.body;
 
-  // Letter styling distinction
+  // Modal type styling distinction
+  modalContainer.classList.remove('is-rest');
   if (id === 'letter') {
     modalContainer.classList.add('is-letter');
   } else {
     modalContainer.classList.remove('is-letter');
   }
 
-  // Action Button config
-  if (hotspot && hotspot.actionLabel) {
+  // Action Button config (Letter never has action button)
+  if (hotspot && hotspot.actionLabel && id !== 'letter') {
     modalBtnAction.hidden = false;
+    modalBtnAction.style.display = '';
     modalBtnActionText.textContent = hotspot.actionLabel;
   } else {
     modalBtnAction.hidden = true;
+    modalBtnAction.style.display = 'none';
   }
 
   // Show Modal
@@ -132,7 +135,11 @@ export function openRestCard(triggerElement = null) {
   if (modalBody) modalBody.textContent = REST_CARD_COPY.body;
 
   modalContainer.classList.remove('is-letter');
-  modalBtnAction.hidden = true;
+  modalContainer.classList.add('is-rest');
+  if (modalBtnAction) {
+    modalBtnAction.hidden = true;
+    modalBtnAction.style.display = 'none';
+  }
 
   modalBackdrop.hidden = false;
   void modalBackdrop.offsetWidth;
@@ -153,6 +160,12 @@ export function closeModal() {
 
   setTimeout(() => {
     modalBackdrop.hidden = true;
+    modalContainer?.classList.remove('is-letter', 'is-rest');
+    if (modalBtnAction) {
+      modalBtnAction.hidden = true;
+      modalBtnAction.style.display = 'none';
+    }
+
     if (currentOpenId) {
       const btn = document.getElementById(`hotspot-${currentOpenId}`);
       if (btn) btn.setAttribute('aria-expanded', 'false');

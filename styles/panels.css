@@ -184,6 +184,11 @@
   outline: none;
 }
 
+/* Guarantee [hidden] is always respected regardless of class display rules */
+[hidden] {
+  display: none !important;
+}
+
 /* ----------------------------------------------------
    Special Stationery Styling for the Letter Panel
    ---------------------------------------------------- */
@@ -192,6 +197,15 @@
   color: #2b2622;
   border: 2px solid #e8dfd3;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
+}
+
+/* Completely remove the action buttons container on the letter modal */
+.modal-dialog.is-letter .modal-actions {
+  display: none !important;
+}
+
+.modal-dialog.is-letter .modal-inner {
+  padding-bottom: 32px;
 }
 
 .modal-dialog.is-letter .modal-badge {
@@ -236,6 +250,18 @@
 
 .modal-dialog.is-letter .btn-action.secondary:hover {
   background: #dfd6c6;
+}
+
+/* ----------------------------------------------------
+   Special Styling for Rest Card ("Pamit Tidur")
+   ---------------------------------------------------- */
+.modal-dialog.is-rest #modal-btn-action,
+.modal-dialog.is-rest .btn-action.primary {
+  display: none !important;
+}
+
+.modal-dialog.is-rest .modal-actions {
+  justify-content: flex-end;
 }
 
 /* ----------------------------------------------------

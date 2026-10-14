@@ -41,11 +41,20 @@ class MotionEngine {
     this.isReducedMotion = false;
     this.hasPointerMoved = false;
 
+    this.isTouchDragging = false;
+    this.touchStartX = 0;
+    this.touchStartY = 0;
+    this.touchBaseTargetX = 0;
+    this.touchBaseTargetY = 0;
+
     this.listeners = new Set();
     this.animFrameId = null;
     this.isRunning = false;
 
     this._onPointerMove = this._onPointerMove.bind(this);
+    this._onTouchStart = this._onTouchStart.bind(this);
+    this._onTouchMove = this._onTouchMove.bind(this);
+    this._onTouchEnd = this._onTouchEnd.bind(this);
     this._onDeviceOrientation = this._onDeviceOrientation.bind(this);
     this._onVisibilityChange = this._onVisibilityChange.bind(this);
     this._loop = this._loop.bind(this);
@@ -67,8 +76,12 @@ class MotionEngine {
       }
     });
 
-    // Listen to mouse pointer tracking
+    // Listen to mouse pointer and touch tracking
     window.addEventListener('pointermove', this._onPointerMove, { passive: true });
+    window.addEventListener('touchstart', this._onTouchStart, { passive: true });
+    window.addEventListener('touchmove', this._onTouchMove, { passive: true });
+    window.addEventListener('touchend', this._onTouchEnd, { passive: true });
+    window.addEventListener('touchcancel', this._onTouchEnd, { passive: true });
     document.addEventListener('visibilitychange', this._onVisibilityChange);
 
     this.start();
@@ -147,7 +160,8 @@ class MotionEngine {
   }
 
   _onPointerMove(e) {
-    if (this.isReducedMotion || this.isGyroActive) return;
+    if (this.isReducedMotion || this.isGyroActive || this.isTouchDragging) return;
+    if (e.pointerType === 'touch') return;
     this.hasPointerMoved = true;
 
     const width = window.innerWidth || 1;
@@ -159,6 +173,40 @@ class MotionEngine {
 
     this.targetX = clamp(x, -1, 1);
     this.targetY = clamp(y, -1, 1);
+  }
+
+  _onTouchStart(e) {
+    if (this.isReducedMotion || !e.touches || e.touches.length !== 1) return;
+    this.isTouchDragging = true;
+    this.touchStartX = e.touches[0].clientX;
+    this.touchStartY = e.touches[0].clientY;
+    this.touchBaseTargetX = this.targetX;
+    this.touchBaseTargetY = this.targetY;
+    this.hasPointerMoved = true;
+  }
+
+  _onTouchMove(e) {
+    if (!this.isTouchDragging || !e.touches || e.touches.length !== 1) return;
+    // Don't pan scene if modal is active
+    const modal = document.getElementById('modal-backdrop');
+    if (modal && modal.classList.contains('active')) return;
+
+    const currentX = e.touches[0].clientX;
+    const currentY = e.touches[0].clientY;
+    const deltaX = currentX - this.touchStartX;
+    const deltaY = currentY - this.touchStartY;
+
+    // Direct 1:1 feel - dragging finger right (deltaX > 0) decreases x (pans camera left to show lamp/window)
+    // dragging finger left (deltaX < 0) increases x (pans camera right to show laptop)
+    const normDeltaX = -(deltaX / 300);
+    const normDeltaY = -(deltaY / 200);
+
+    this.targetX = clamp(this.touchBaseTargetX + normDeltaX, -1, 1);
+    this.targetY = clamp(this.touchBaseTargetY + normDeltaY, -1, 1);
+  }
+
+  _onTouchEnd() {
+    this.isTouchDragging = false;
   }
 
   _onDeviceOrientation(e) {
@@ -233,6 +281,10 @@ class MotionEngine {
     this.disableGyro();
     if (typeof window !== 'undefined') {
       window.removeEventListener('pointermove', this._onPointerMove);
+      window.removeEventListener('touchstart', this._onTouchStart);
+      window.removeEventListener('touchmove', this._onTouchMove);
+      window.removeEventListener('touchend', this._onTouchEnd);
+      window.removeEventListener('touchcancel', this._onTouchEnd);
       document.removeEventListener('visibilitychange', this._onVisibilityChange);
     }
     this.listeners.clear();

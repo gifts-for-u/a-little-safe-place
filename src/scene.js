@@ -40,16 +40,33 @@ function applyParallaxTransforms(coords) {
   }
 
   const { x, y } = coords;
+  const isPortrait = typeof window !== 'undefined' && window.innerHeight > window.innerWidth;
+
+  // On mobile portrait, enable smooth camera panning across the 16:9 room canvas
+  // x is normalized [-1.0, 1.0].
+  // Center naturally on the cozy bed & stitch (artwork ~58%), with full range to window (left) and laptop (right).
+  const mobileCenterOffset = -90;
+  const mobilePanRange = 420;
+  const basePanX = isPortrait ? (mobileCenterOffset - x * mobilePanRange) : 0;
+  const basePanY = isPortrait ? -y * 25 : 0;
 
   for (let i = 0; i < layers.length; i++) {
     const layer = layers[i];
-    const depthStr = layer.getAttribute('data-depth') || '0.05';
+    const depthStr = layer.getAttribute('data-depth') || '0.06';
     const depth = parseFloat(depthStr);
 
-    const shiftX = Math.round(x * depth * MAX_PARALLAX_PIXELS * 10) / 10;
-    const shiftY = Math.round(y * depth * MAX_PARALLAX_PIXELS * 10) / 10;
+    // Subtle 2.5D depth parallax relative to room depth (0.06)
+    // Layers with depth 0.06 (room, furniture, hotspots) have 0 relative delta and stay 100% locked!
+    // Layer with depth 0.02 (sky outside window) moves with depth parallax.
+    // Layer with depth 0.12 (foreground dust) moves with foreground parallax.
+    const relDepth = depth - 0.06;
+    const parallaxX = isPortrait ? -x * relDepth * 120 : -x * depth * 220;
+    const parallaxY = isPortrait ? -y * relDepth * 80 : -y * depth * 140;
 
-    layer.style.transform = `translate3d(${shiftX}px, ${shiftY}px, 0)`;
+    const totalX = Math.round((basePanX + parallaxX) * 10) / 10;
+    const totalY = Math.round((basePanY + parallaxY) * 10) / 10;
+
+    layer.style.transform = `translate3d(${totalX}px, ${totalY}px, 0)`;
   }
 }
 

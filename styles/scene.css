@@ -11,15 +11,15 @@
   background-color: var(--color-bg-deep);
 }
 
-/* 2.5D Stage with Perspective and Overscan */
+/* 2.5D Stage with Aspect Ratio Locked to 1376x768 Artwork */
 .scene-stage {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 100%;
-  height: 100%;
-  /* 1.12x Overscan to prevent clipped edges during 3D parallax shifts */
-  transform: translate(-50%, -50%) scale(1.12);
+  /* Size stage to maintain exact 1376/768 ratio and cover entire viewport */
+  width: max(100vw, calc(100vh * (1376 / 768)));
+  height: max(100vh, calc(100vw / (1376 / 768)));
+  transform: translate(-50%, -50%) scale(1.08);
   transform-origin: center center;
   transform-style: preserve-3d;
   will-change: transform;
@@ -79,18 +79,10 @@
 .room-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  /* On mobile portrait, focus on the cozy bed, lamp, and desk area */
-  object-position: 62% center;
+  object-fit: fill;
   display: block;
   user-select: none;
   -webkit-user-drag: none;
-}
-
-@media (min-width: 900px) {
-  .room-image {
-    object-position: center center;
-  }
 }
 
 .room-ambient-light {
@@ -108,11 +100,11 @@
 /* Dynamic Lamp Light Bloom */
 .lamp-bloom {
   position: absolute;
-  left: 42%;
-  top: 58%;
+  left: 42.2%;
+  top: 57.3%;
   transform: translate(-50%, -50%);
-  width: 320px;
-  height: 320px;
+  width: 22%;
+  aspect-ratio: 1 / 1;
   border-radius: 50%;
   background: radial-gradient(circle, rgba(255, 195, 115, 0.45) 0%, rgba(255, 184, 108, 0.18) 40%, transparent 70%);
   filter: blur(12px);
@@ -130,10 +122,10 @@
 /* Stitch Plush Figure */
 .stitch-companion {
   position: absolute;
-  left: 56%;
-  top: 55%;
+  left: 56.0%;
+  top: 55.3%;
   transform: translate(-50%, -50%);
-  width: clamp(100px, 16vw, 170px);
+  width: 11.5%;
   aspect-ratio: 1 / 1;
   pointer-events: none;
   z-index: 5;
@@ -281,29 +273,29 @@
 }
 
 /* Individual Hotspot Coords (Anchored to 2.5D Room Elements) */
-.hotspot-bed {
-  left: 74%;
-  top: 72%;
+.hotspot-lamp {
+  left: 42.2%;
+  top: 57.3%;
 }
 
 .hotspot-letter {
-  left: 42%;
-  top: 70%;
+  left: 41.8%;
+  top: 69.7%;
 }
 
 .hotspot-plush {
-  left: 56%;
-  top: 55%;
+  left: 56.0%;
+  top: 55.3%;
+}
+
+.hotspot-bed {
+  left: 74.1%;
+  top: 71.6%;
 }
 
 .hotspot-laptop {
-  left: 88%;
-  top: 51%;
-}
-
-.hotspot-lamp {
-  left: 42%;
-  top: 57%;
+  left: 87.9%;
+  top: 51.4%;
 }
 
 /* Layer 5: Foreground Dust Motes & Vignette */
