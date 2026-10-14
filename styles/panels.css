@@ -1,0 +1,389 @@
+/**
+ * The Safe Place — Dialog Modals & Interactive Panels Styling
+ */
+
+/* Modal Backdrop */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: var(--color-bg-overlay);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--transition-normal), visibility var(--transition-normal);
+}
+
+.modal-backdrop.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Modal Dialog Window */
+.modal-dialog {
+  position: relative;
+  width: 100%;
+  max-width: 540px;
+  max-height: 85vh;
+  max-height: 85dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-card-glass);
+  border: 1px solid var(--color-card-border);
+  border-radius: 24px;
+  box-shadow: var(--color-card-shadow);
+  transform: translateY(24px) scale(0.96);
+  transition: transform var(--transition-bounce), opacity var(--transition-normal);
+  overflow: hidden;
+}
+
+.modal-backdrop.active .modal-dialog {
+  transform: translateY(0) scale(1);
+}
+
+/* Modal Close Button */
+.modal-close-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--color-card-border);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all var(--transition-fast);
+}
+
+.modal-close-btn .icon {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+}
+
+.modal-close-btn:hover,
+.modal-close-btn:focus-visible {
+  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.18);
+  border-color: var(--color-amber-glow);
+  outline: none;
+}
+
+/* Modal Inner Content */
+.modal-inner {
+  display: flex;
+  flex-direction: column;
+  padding: 28px 24px 24px 24px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.modal-header {
+  margin-bottom: 18px;
+  padding-right: 28px;
+}
+
+.modal-badge {
+  display: inline-block;
+  font-family: var(--font-heading);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-amber-bright);
+  background: rgba(255, 184, 108, 0.15);
+  border: 1px solid rgba(255, 184, 108, 0.3);
+  padding: 3px 10px;
+  border-radius: 9999px;
+  margin-bottom: 8px;
+}
+
+.modal-title {
+  font-family: var(--font-heading);
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  line-height: 1.25;
+  margin-bottom: 4px;
+}
+
+.modal-subtitle {
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+}
+
+.modal-body {
+  font-size: 0.98rem;
+  line-height: 1.75;
+  color: var(--color-text-secondary);
+  white-space: pre-line;
+  margin-bottom: 24px;
+}
+
+/* Interactive Action Buttons inside Modal */
+.modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.btn-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 20px;
+  border-radius: 12px;
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  text-decoration: none;
+}
+
+.btn-action.primary {
+  background: linear-gradient(135deg, var(--color-amber-bright) 0%, var(--color-amber-glow) 100%);
+  color: #121826;
+  border: none;
+  box-shadow: 0 6px 18px rgba(255, 184, 108, 0.35);
+}
+
+.btn-action.primary:hover,
+.btn-action.primary:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255, 184, 108, 0.5);
+  outline: none;
+}
+
+.btn-action.secondary {
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-card-border);
+}
+
+.btn-action.secondary:hover,
+.btn-action.secondary:focus-visible {
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--color-text-primary);
+  outline: none;
+}
+
+/* ----------------------------------------------------
+   Special Stationery Styling for the Letter Panel
+   ---------------------------------------------------- */
+.modal-dialog.is-letter {
+  background: #fdfbf7;
+  color: #2b2622;
+  border: 2px solid #e8dfd3;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
+}
+
+.modal-dialog.is-letter .modal-badge {
+  background: rgba(212, 163, 115, 0.2);
+  border-color: #d4a373;
+  color: #8c5825;
+}
+
+.modal-dialog.is-letter .modal-title {
+  color: #221c18;
+  font-family: var(--font-handwritten);
+  font-size: 2rem;
+}
+
+.modal-dialog.is-letter .modal-subtitle {
+  color: #7d7268;
+}
+
+.modal-dialog.is-letter .modal-body {
+  color: #332b26;
+  background-image: repeating-linear-gradient(transparent, transparent 31px, #ebe3d5 31px, #ebe3d5 32px);
+  line-height: 32px;
+  font-size: 1.02rem;
+  padding: 8px 0;
+}
+
+.modal-dialog.is-letter .modal-close-btn {
+  background: rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #55483d;
+}
+
+.modal-dialog.is-letter .modal-close-btn:hover {
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.modal-dialog.is-letter .btn-action.secondary {
+  background: #ede6da;
+  border-color: #d6ccbe;
+  color: #3e332a;
+}
+
+.modal-dialog.is-letter .btn-action.secondary:hover {
+  background: #dfd6c6;
+}
+
+/* ----------------------------------------------------
+   Welcome Screen / Intro Overlay Card
+   ---------------------------------------------------- */
+.welcome-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(6, 10, 18, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+.welcome-modal-overlay.dismissed {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.welcome-card {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  background: var(--color-card-glass);
+  border: 1px solid var(--color-card-border);
+  border-radius: 28px;
+  padding: 32px 24px;
+  text-align: center;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+  animation: welcome-float 4.5s ease-in-out infinite;
+}
+
+.welcome-sparkle-top {
+  font-size: 28px;
+  margin-bottom: 12px;
+}
+
+.welcome-title {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 4px;
+  text-shadow: 0 0 16px rgba(255, 184, 108, 0.4);
+}
+
+.welcome-sub {
+  font-size: 0.95rem;
+  color: var(--color-text-accent);
+  margin-bottom: 20px;
+  letter-spacing: 0.02em;
+}
+
+.welcome-letter-preview {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 18px 16px;
+  margin-bottom: 16px;
+  font-size: 0.94rem;
+  line-height: 1.7;
+  color: var(--color-text-secondary);
+}
+
+.welcome-letter-preview p + p {
+  margin-top: 6px;
+}
+
+.welcome-hint {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  font-style: italic;
+  margin-bottom: 24px;
+}
+
+.btn-enter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  height: 50px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--color-amber-bright) 0%, var(--color-amber-glow) 100%);
+  color: #0b111e;
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(255, 184, 108, 0.4);
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.btn-enter .icon-arrow {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  transition: transform var(--transition-fast);
+}
+
+.btn-enter:hover,
+.btn-enter:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(255, 184, 108, 0.6);
+  outline: none;
+}
+
+.btn-enter:hover .icon-arrow {
+  transform: translateX(4px);
+}
+
+@keyframes welcome-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* Mobile Adjustments */
+@media (max-width: 480px) {
+  .modal-dialog {
+    border-radius: 20px;
+    max-height: 88dvh;
+  }
+  
+  .modal-inner {
+    padding: 22px 18px 18px 18px;
+  }
+  
+  .modal-title {
+    font-size: 1.25rem;
+  }
+  
+  .modal-dialog.is-letter .modal-title {
+    font-size: 1.6rem;
+  }
+  
+  .welcome-card {
+    padding: 24px 18px;
+    border-radius: 22px;
+  }
+  
+  .welcome-title {
+    font-size: 1.55rem;
+  }
+}
