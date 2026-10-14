@@ -244,16 +244,25 @@ export function triggerLaptopAction() {
 }
 
 export function toggleLamp() {
+  const stage = document.querySelector('.scene-stage');
   const lampBloom = document.getElementById('lamp-bloom');
   isLampWarm = !isLampWarm;
+
+  if (stage) {
+    if (isLampWarm) {
+      stage.classList.remove('is-dimmed');
+    } else {
+      stage.classList.add('is-dimmed');
+    }
+  }
 
   if (lampBloom) {
     if (isLampWarm) {
       lampBloom.classList.remove('dimmed');
-      showToast('Lampu kembali menghangatkan sudut kamarmu 💡✨');
+      showToast('Lampu kembali dinyalakan, sudut kamarmu kembali hangat 💡✨');
     } else {
       lampBloom.classList.add('dimmed');
-      showToast('Cahaya diredupkan agar matamu lebih rileks 🌙');
+      showToast('Cahaya kamar diredupkan agar suasana lebih tenang dan rileks 🌙');
     }
   }
   closeModal();

@@ -65,9 +65,25 @@
   opacity: 0.7;
 }
 
-/* Layer 2: Main Anime Bedroom Illustration */
 .layer-room {
   z-index: 2;
+  position: relative;
+}
+
+/* Atmospheric Night Shadow Overlay when lamp is dimmed */
+.layer-room::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 45% 65%, rgba(6, 12, 28, 0.45) 0%, rgba(2, 5, 12, 0.75) 100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  mix-blend-mode: multiply;
+}
+
+.scene-stage.is-dimmed .layer-room::after {
+  opacity: 1;
 }
 
 .room-picture {
@@ -83,6 +99,11 @@
   display: block;
   user-select: none;
   -webkit-user-drag: none;
+  transition: filter 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.scene-stage.is-dimmed .room-image {
+  filter: brightness(0.48) contrast(1.12) saturate(0.8);
 }
 
 .room-ambient-light {
@@ -90,6 +111,11 @@
   inset: 0;
   background: radial-gradient(circle at 45% 65%, rgba(255, 184, 108, 0.12) 0%, transparent 60%);
   pointer-events: none;
+  transition: opacity 1.2s ease;
+}
+
+.scene-stage.is-dimmed .room-ambient-light {
+  opacity: 0;
 }
 
 /* Layer 3: Interactive Furniture Details & Plush */
@@ -110,13 +136,14 @@
   filter: blur(12px);
   pointer-events: none;
   opacity: 1;
-  transition: opacity 0.8s ease, transform 0.8s ease;
+  transition: opacity 1.2s ease, transform 1.2s ease;
   mix-blend-mode: screen;
 }
 
-.lamp-bloom.dimmed {
-  opacity: 0.15;
-  transform: translate(-50%, -50%) scale(0.8);
+.lamp-bloom.dimmed,
+.scene-stage.is-dimmed .lamp-bloom {
+  opacity: 0.04;
+  transform: translate(-50%, -50%) scale(0.6);
 }
 
 /* Stitch Plush Figure */
@@ -131,6 +158,11 @@
   z-index: 5;
   filter: drop-shadow(0 14px 22px rgba(10, 15, 26, 0.75));
   animation: plush-breathe 4.5s ease-in-out infinite;
+  transition: filter 1.2s ease;
+}
+
+.scene-stage.is-dimmed .stitch-companion {
+  filter: drop-shadow(0 14px 22px rgba(10, 15, 26, 0.85)) brightness(0.62) saturate(0.85);
 }
 
 .stitch-sprite {

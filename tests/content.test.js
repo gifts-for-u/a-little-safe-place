@@ -28,7 +28,7 @@ expectedIds.forEach(id => {
 });
 
 // 5. Verify Letter copy
-assert.ok(MESSAGES.letter.body.includes('buat sayangku'), 'Letter must contain "buat sayangku"');
+assert.ok(MESSAGES.letter.body.includes('buat kamu'), 'Letter must contain "buat kamu"');
 
 // 6. Verify Rest Card Copy
 assert.ok(REST_CARD_COPY.body.includes('makasih ya udah mampir sebentar'), 'Rest card must match PRD text');
