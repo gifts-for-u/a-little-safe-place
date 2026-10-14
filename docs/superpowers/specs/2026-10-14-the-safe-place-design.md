@@ -21,8 +21,8 @@ The user can explore five distinct interactive objects in any order without pres
 - **Core Technologies:** HTML5, Modern Vanilla CSS, Vanilla JavaScript (ES Modules).
 - **No Heavy Frameworks or Bundlers:** Zero build steps required; fast instant native browser loading.
 - **2.5D Layer Composition:** Stacked DOM layers within an overscanned viewport container using CSS 3D transforms (`translate3d`) with perspective.
-- **Audio Engine:** Custom Web Audio API ambient rain & calm tone synthesizer (zero external audio file dependency, zero 404 risk, seamless infinite loop, no autoplay).
-- **Deployment:** GitHub Pages static hosting using strict relative paths (`./assets/...`, `./src/...`, `./styles/...`).
+- **Audio Engine:** Custom Web Audio API ambient rain & calm tone synthesizer (zero external audio file dependency, zero 404 risk, seamless infinite loop, with autoplay triggered on room entry).
+- **Deployment:** GitHub Pages static hosting using strict relative paths (`./assets/...`, `./src/...`, `./styles/...`). Remote repository target: `https://github.com/gifts-for-u/a-little-safe-place.git`.
 
 ---
 
@@ -132,10 +132,10 @@ All message copy is rendered in pure, accessible HTML text (never baked into ras
 
 ---
 
-## 6. Audio System (No Autoplay)
+## 6. Audio System (Autoplay on Entry)
 
-- **Initial State:** Muted / Sound Off by default.
-- **Control:** Top bar audio chip button: `[🎵 Suara: Mati]` $\leftrightarrow$ `[🎵 Suara: Hidup]`.
+- **Initial State:** Autoplay ambient sound plays as soon as user clicks "Masuk ke kamar" (or taps the room), satisfying browser User-Activation requirements while immediately filling the room with soothing rain.
+- **Control:** Top bar audio chip button: `[🎵 Suara: Mati]` $\leftrightarrow$ `[🎵 Suara: Hidup]` enables user to easily toggle or mute whenever desired.
 - **Implementation:** Web Audio API generating two relaxing layers:
   1. Pink/Brown filtered noise simulating rain on a window pane.
   2. Gentle pentatonic warm harmonic tones.
