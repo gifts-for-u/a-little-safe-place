@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>The Safe Place — a little room just for you</title>
+  <meta name="description" content="Kamar anime 2.5D interaktif yang tenang dan hangat di malam berhujan, tempatmu meletakkan lelah dan beristirahat sejenak.">
+  <meta name="theme-color" content="#0d1322">
+
+  <!-- Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Nunito:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Caveat:wght@600&display=swap" rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="./styles/main.css">
+  <link rel="stylesheet" href="./styles/scene.css">
+  <link rel="stylesheet" href="./styles/panels.css">
+  <link rel="stylesheet" href="./styles/motion.css">
+</head>
+<body>
+  <!-- Inline SVG Sprite Icons -->
+  <div id="svg-sprite-container" aria-hidden="true" style="display: none;"></div>
+
+  <!-- Ambient Audio Source Element -->
+  <audio id="bg-audio" preload="auto" loop src="./assets/sounds/always with me-ghibli.mp3"></audio>
+
+  <!-- Top Navigation Controls -->
+  <header class="app-header" role="banner">
+    <div class="brand-pill">
+      <span class="brand-sparkle">✨</span>
+      <h1 class="brand-title">The Safe Place</h1>
+    </div>
+
+    <nav class="header-controls" aria-label="Kontrol Pengalaman">
+      <!-- Audio Toggle Button -->
+      <button id="btn-audio-toggle" class="chip-button" aria-label="Nyalakan suara musik latar" aria-pressed="false">
+        <svg class="icon" aria-hidden="true"><use href="#icon-sound-off"></use></svg>
+        <span class="chip-label">Musik: Mati</span>
+      </button>
+
+      <!-- Motion / Gyro Toggle Button -->
+      <button id="btn-motion-toggle" class="chip-button" aria-label="Aktifkan efek gerak kamera / gyroscope" aria-pressed="false">
+        <svg class="icon" aria-hidden="true"><use href="#icon-motion"></use></svg>
+        <span class="chip-label">Efek Gerak</span>
+      </button>
+
+      <!-- Rest / Closing Card Button -->
+      <button id="btn-rest-card" class="chip-button chip-rest" aria-label="Buka pesan pamit istirahat">
+        <svg class="icon" aria-hidden="true"><use href="#icon-moon"></use></svg>
+        <span class="chip-label">Pamit Tidur</span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- Main 2.5D Viewport Container -->
+  <main id="viewport-container" class="viewport-container" aria-label="Kamar Tidur 2.5D Interaktif">
+    <div id="scene-stage" class="scene-stage">
+      
+      <!-- Layer 1: Far Sky & Window Rain -->
+      <div class="layer layer-sky" data-depth="0.02" aria-hidden="true">
+        <div class="sky-backdrop"></div>
+        <div class="rain-canvas-overlay" id="rain-particles"></div>
+      </div>
+
+      <!-- Layer 2: Room Architecture & Background Illustration -->
+      <div class="layer layer-room" data-depth="0.05" aria-hidden="true">
+        <picture class="room-picture">
+          <source srcset="./assets/images/room/bedroom_base.webp" type="image/webp">
+          <img src="./assets/images/room/bedroom_base.jpg" alt="Kamar tidur anime yang hangat dan nyaman di malam hari" class="room-image" draggable="false">
+        </picture>
+        <!-- Warm ambient room glow overlay -->
+        <div class="room-ambient-light"></div>
+      </div>
+
+      <!-- Layer 3: Interactive Furniture & Dynamic Elements -->
+      <div class="layer layer-furniture" data-depth="0.08">
+        
+        <!-- Lamp Light Dynamic Bloom -->
+        <div id="lamp-bloom" class="lamp-bloom active" aria-hidden="true"></div>
+
+        <!-- Stitch Plush Figure on the Bed -->
+        <div id="stitch-companion" class="stitch-companion" aria-hidden="true">
+          <picture>
+            <source srcset="./assets/images/objects/stitch_plush.webp" type="image/webp">
+            <img src="./assets/images/objects/stitch_plush.png" alt="Boneka Stitch di atas kasur" class="stitch-sprite" draggable="false">
+          </picture>
+          <div class="plush-heart-burst" id="plush-heart-burst"></div>
+        </div>
+
+        <!-- Cozy Blanket Wave Overlay for "kita istirahat yu" interaction -->
+        <div id="blanket-warmth" class="blanket-warmth" aria-hidden="true">
+          <div class="blanket-glow-wave"></div>
+        </div>
+
+      </div>
+
+      <!-- Layer 4: Semantic Interactive Hotspots (Exact 5 Objects) -->
+      <div class="layer layer-hotspots" data-depth="0.08" role="region" aria-label="Objek Interaktif di Kamar">
+        
+        <!-- 1. Bed Hotspot -->
+        <button id="hotspot-bed" class="hotspot hotspot-bed" data-id="bed" aria-label="Kasur: Istirahat tanpa rasa bersalah" aria-haspopup="dialog" aria-expanded="false">
+          <span class="hotspot-beacon" aria-hidden="true">
+            <span class="beacon-pulse"></span>
+            <span class="beacon-core"></span>
+          </span>
+          <span class="hotspot-tooltip" aria-hidden="true">
+            <span class="tooltip-title">Kasur Empuk</span>
+            <span class="tooltip-sub">istirahat sebentar</span>
+          </span>
+        </button>
+
+        <!-- 2. Letter Hotspot -->
+        <button id="hotspot-letter" class="hotspot hotspot-letter" data-id="letter" aria-label="Surat di meja samping: Surat dariku untukmu" aria-haspopup="dialog" aria-expanded="false">
+          <span class="hotspot-beacon" aria-hidden="true">
+            <span class="beacon-pulse"></span>
+            <span class="beacon-core"></span>
+          </span>
+          <span class="hotspot-tooltip" aria-hidden="true">
+            <span class="tooltip-title">Surat Dari Aku</span>
+            <span class="tooltip-sub">baca surat</span>
+          </span>
+        </button>
+
+        <!-- 3. Plush Hotspot -->
+        <button id="hotspot-plush" class="hotspot hotspot-plush" data-id="plush" aria-label="Boneka Stitch: Peluk bonekanya" aria-haspopup="dialog" aria-expanded="false">
+          <span class="hotspot-beacon" aria-hidden="true">
+            <span class="beacon-pulse"></span>
+            <span class="beacon-core"></span>
+          </span>
+          <span class="hotspot-tooltip" aria-hidden="true">
+            <span class="tooltip-title">Boneka Stitch</span>
+            <span class="tooltip-sub">peluk aku</span>
+          </span>
+        </button>
+
+        <!-- 4. Laptop Hotspot -->
+        <button id="hotspot-laptop" class="hotspot hotspot-laptop" data-id="laptop" aria-label="Laptop: Pekerjaan bisa menunggu" aria-haspopup="dialog" aria-expanded="false">
+          <span class="hotspot-beacon" aria-hidden="true">
+            <span class="beacon-pulse"></span>
+            <span class="beacon-core"></span>
+          </span>
+          <span class="hotspot-tooltip" aria-hidden="true">
+            <span class="tooltip-title">Laptop Kerja</span>
+            <span class="tooltip-sub">pekerjaan bisa tunggu</span>
+          </span>
+        </button>
+
+        <!-- 5. Bedside Lamp Hotspot -->
+        <button id="hotspot-lamp" class="hotspot hotspot-lamp" data-id="lamp" aria-label="Lampu meja: Secercah cahaya harapan" aria-haspopup="dialog" aria-expanded="false">
+          <span class="hotspot-beacon" aria-hidden="true">
+            <span class="beacon-pulse"></span>
+            <span class="beacon-core"></span>
+          </span>
+          <span class="hotspot-tooltip" aria-hidden="true">
+            <span class="tooltip-title">Lampu Meja</span>
+            <span class="tooltip-sub">cahaya hangat</span>
+          </span>
+        </button>
+
+      </div>
+
+      <!-- Layer 5: Foreground Atmosphere & Floating Dust Embers (Non-interactive) -->
+      <div class="layer layer-foreground" data-depth="0.14" aria-hidden="true">
+        <div class="dust-motes-container" id="dust-motes"></div>
+        <div class="vignette-overlay"></div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Modal Dialog System Container -->
+  <div id="modal-backdrop" class="modal-backdrop" hidden>
+    <div id="modal-container" class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-body">
+      
+      <!-- Close Button -->
+      <button id="modal-btn-close" class="modal-close-btn" aria-label="Tutup pesan dan kembali ke kamar">
+        <svg class="icon" aria-hidden="true"><use href="#icon-close"></use></svg>
+      </button>
+
+      <!-- Modal Content Body -->
+      <div class="modal-inner">
+        <div class="modal-header">
+          <span id="modal-badge" class="modal-badge">The Safe Place</span>
+          <h2 id="modal-title" class="modal-title">Judul Pesan</h2>
+          <p id="modal-subtitle" class="modal-subtitle">Subjudul</p>
+        </div>
+
+        <div id="modal-body" class="modal-body">
+          <!-- Text dynamically injected from content.js -->
+        </div>
+
+        <div id="modal-actions" class="modal-actions">
+          <!-- Dynamic action button e.g. "kita istirahat yu" or "Peluk bonekanya" -->
+          <button id="modal-btn-action" class="btn-action primary" hidden>
+            <span class="btn-icon">✨</span>
+            <span id="modal-btn-action-text" class="btn-text">Aksi</span>
+          </button>
+          
+          <button id="modal-btn-back" class="btn-action secondary">
+            <span>Kembali ke Kamar</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Welcome Modal / Intro Overlay -->
+  <div id="welcome-modal" class="welcome-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="welcome-title">
+    <div class="welcome-card">
+      <div class="welcome-sparkle-top">🌙 ✨</div>
+      <h2 id="welcome-title" class="welcome-title">The Safe Place</h2>
+      <p class="welcome-sub">a little room just for you</p>
+      
+      <div class="welcome-letter-preview">
+        <p>hai sayanggg, sini dulu bentar.</p>
+        <p>di sini nggak ada deadline, nggak ada yang harus kamu selesaikan.</p>
+        <p>kamu boleh istirahat sebentar, ya.</p>
+      </div>
+
+      <p class="welcome-hint">klik apa pun yang bikin kamu penasaran di dalam kamar.</p>
+
+      <button id="btn-enter-room" class="btn-enter" autofocus>
+        <span>Masuk ke kamar</span>
+        <svg class="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Notification Toast for sensor or status messages -->
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+  <!-- Application Bootstrap Script -->
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

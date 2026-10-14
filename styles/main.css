@@ -1,0 +1,220 @@
+/**
+ * The Safe Place — Main Design System & UI Styling
+ */
+
+:root {
+  /* Color Palette - Anime Midnight & Warm Amber */
+  --color-bg-deep: #070b14;
+  --color-bg-room: #0c1220;
+  --color-bg-overlay: rgba(10, 15, 28, 0.75);
+  --color-card-glass: rgba(18, 25, 43, 0.85);
+  --color-card-border: rgba(255, 214, 153, 0.18);
+  --color-card-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+
+  --color-amber-glow: #ffb86c;
+  --color-amber-bright: #ffd166;
+  --color-amber-soft: rgba(255, 184, 108, 0.25);
+
+  --color-pink-soft: #f4a6b8;
+  --color-pink-glow: rgba(244, 166, 184, 0.3);
+  --color-cream: #faf5ee;
+
+  --color-text-primary: #faf9f6;
+  --color-text-secondary: #d1d5db;
+  --color-text-muted: #9ca3af;
+  --color-text-accent: #ffd166;
+
+  /* Typography */
+  --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-body: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-handwritten: 'Caveat', cursive, sans-serif;
+
+  /* Transitions */
+  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Base Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  background-color: var(--color-bg-deep);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* App Header Bar */
+.app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: env(safe-area-inset-top, 12px) 16px 12px 16px;
+  background: linear-gradient(to bottom, rgba(7, 11, 20, 0.85) 0%, rgba(7, 11, 20, 0.3) 70%, transparent 100%);
+  pointer-events: none;
+}
+
+.brand-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(14, 21, 37, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 6px 14px;
+  border-radius: 9999px;
+  border: 1px solid var(--color-card-border);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  pointer-events: auto;
+}
+
+.brand-sparkle {
+  font-size: 14px;
+  animation: pulse-sparkle 2.4s ease-in-out infinite;
+}
+
+.brand-title {
+  font-family: var(--font-heading);
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--color-text-primary);
+  text-shadow: 0 0 10px rgba(255, 184, 108, 0.4);
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  pointer-events: auto;
+}
+
+/* Floating Chip Buttons */
+.chip-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 9999px;
+  border: 1px solid var(--color-card-border);
+  background: rgba(14, 21, 37, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--color-text-secondary);
+  font-family: var(--font-heading);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
+.chip-button .icon {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  stroke-width: 2;
+  flex-shrink: 0;
+}
+
+.chip-button:hover, .chip-button:focus-visible {
+  color: var(--color-text-primary);
+  border-color: var(--color-amber-glow);
+  background: rgba(22, 33, 58, 0.9);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(255, 184, 108, 0.25);
+  outline: none;
+}
+
+.chip-button:active {
+  transform: translateY(1px);
+}
+
+.chip-button[aria-pressed="true"] {
+  background: rgba(255, 184, 108, 0.18);
+  border-color: var(--color-amber-glow);
+  color: var(--color-amber-bright);
+}
+
+.chip-rest {
+  border-color: rgba(244, 166, 184, 0.3);
+}
+
+.chip-rest:hover {
+  border-color: var(--color-pink-soft);
+  box-shadow: 0 6px 18px rgba(244, 166, 184, 0.25);
+}
+
+/* Notification Toast */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(0);
+  z-index: 100;
+  background: rgba(14, 21, 37, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--color-card-border);
+  border-radius: 9999px;
+  padding: 10px 20px;
+  color: var(--color-text-primary);
+  font-size: 0.86rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  transition: opacity var(--transition-normal), transform var(--transition-normal);
+  pointer-events: none;
+}
+
+.toast[hidden] {
+  display: none;
+}
+
+/* Animations */
+@keyframes pulse-sparkle {
+  0%, 100% { opacity: 0.8; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.18); }
+}
+
+/* Responsive adjustment for narrow screens */
+@media (max-width: 480px) {
+  .app-header {
+    padding: env(safe-area-inset-top, 8px) 10px 8px 10px;
+  }
+  
+  .brand-title {
+    font-size: 0.82rem;
+  }
+
+  .chip-button {
+    height: 34px;
+    padding: 0 10px;
+    font-size: 0.78rem;
+  }
+
+  .chip-label {
+    display: none;
+  }
+
+  .chip-button .icon {
+    margin: 0;
+  }
+}
