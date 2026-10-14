@@ -136,9 +136,7 @@ All message copy is rendered in pure, accessible HTML text (never baked into ras
 
 - **Initial State:** Autoplay ambient sound plays as soon as user clicks "Masuk ke kamar" (or taps the room), satisfying browser User-Activation requirements while immediately filling the room with soothing rain.
 - **Control:** Top bar audio chip button: `[🎵 Suara: Mati]` $\leftrightarrow$ `[🎵 Suara: Hidup]` enables user to easily toggle or mute whenever desired.
-- **Implementation:** Web Audio API generating two relaxing layers:
-  1. Pink/Brown filtered noise simulating rain on a window pane.
-  2. Gentle pentatonic warm harmonic tones.
+- **Implementation:** HTML5 Audio / Web Audio API playing the provided comforting Ghibli background track (`./assets/sounds/always with me-ghibli.mp3` - "Always With Me" instrumental) seamlessly looped, combined with optional subtle ambient rain sound.
 - **Graceful Lifecycle:** Smooth gain node volume ramping (fade-in / fade-out) over 0.8 seconds on toggle.
 
 ---

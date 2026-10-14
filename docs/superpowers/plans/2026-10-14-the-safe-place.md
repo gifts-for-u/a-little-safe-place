@@ -123,9 +123,9 @@ Run `node tests/audio.test.js` (expected: module not found).
 
 - [ ] **Step 3: Implement `src/audio.js`**
 
-Implement procedural sound generator:
-- Synthesizes pink/brown noise through a bandpass filter to simulate gentle rain against glass.
-- Dual harmonic oscillators with soft low-pass filter for cozy ambient warmth.
+Implement audio manager:
+- Loads and plays `./assets/sounds/always with me-ghibli.mp3` seamlessly on loop.
+- Blends soft procedural rain noise buffer for a rich cozy rainy-night atmosphere.
 - Master gain node with 0.8s exponential volume ramp on play/pause to avoid audio clipping/popping.
 - Export clean API: `init()`, `play()`, `pause()`, `toggle()`, `isPlaying()`.
 
