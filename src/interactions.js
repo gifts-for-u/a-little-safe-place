@@ -114,9 +114,13 @@ export function openModal(id, triggerElement = null) {
     triggerElement.setAttribute('aria-expanded', 'true');
   }
 
-  // Shift focus to close button for keyboard accessibility
+  // Shift focus to close button for keyboard accessibility without scrolling
   setTimeout(() => {
-    modalBtnClose?.focus();
+    try {
+      modalBtnClose?.focus({ preventScroll: true });
+    } catch (err) {
+      modalBtnClose?.focus();
+    }
   }, 100);
 }
 
@@ -146,7 +150,11 @@ export function openRestCard(triggerElement = null) {
   modalBackdrop.classList.add('active');
 
   setTimeout(() => {
-    modalBtnClose?.focus();
+    try {
+      modalBtnClose?.focus({ preventScroll: true });
+    } catch (err) {
+      modalBtnClose?.focus();
+    }
   }, 100);
 }
 
@@ -172,8 +180,22 @@ export function closeModal() {
     }
 
     if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') {
-      lastFocusedElement.focus();
+      try {
+        lastFocusedElement.focus({ preventScroll: true });
+      } catch (err) {
+        lastFocusedElement.focus();
+      }
     }
+
+    // Force viewport to top-left (prevent browser auto-scrolling window horizontally on mobile)
+    if (typeof window !== 'undefined') {
+      window.scrollTo(0, 0);
+      if (document.documentElement) document.documentElement.scrollLeft = 0;
+      if (document.body) document.body.scrollLeft = 0;
+      const vp = document.querySelector('.viewport-container');
+      if (vp) vp.scrollLeft = 0;
+    }
+
     currentOpenId = null;
   }, 250);
 }

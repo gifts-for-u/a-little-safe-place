@@ -45,8 +45,8 @@ function applyParallaxTransforms(coords) {
   // On mobile portrait, enable smooth camera panning across the 16:9 room canvas
   // x is normalized [-1.0, 1.0].
   // Center naturally on the cozy bed & stitch (artwork ~58%), with full range to window (left) and laptop (right).
-  const mobileCenterOffset = -90;
-  const mobilePanRange = 420;
+  const mobileCenterOffset = -60;
+  const mobilePanRange = 540;
   const basePanX = isPortrait ? (mobileCenterOffset - x * mobilePanRange) : 0;
   const basePanY = isPortrait ? -y * 25 : 0;
 

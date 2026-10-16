@@ -15,17 +15,15 @@ export function lerp(start, end, factor) {
  * Normalizes device orientation angles (gamma & beta) to [-1.0, 1.0].
  * Standard reading: gamma (roll left/right: -15 to +15), beta (pitch up/down: 30 to 60 sitting tilt)
  */
-export function normalizeOrientation(gamma, beta) {
-  const MAX_TILT = 15;
-  // Gamma: roll
-  const clampedGamma = clamp(gamma || 0, -MAX_TILT, MAX_TILT);
-  const normX = clampedGamma / MAX_TILT;
+export function normalizeOrientation(gamma, beta, neutralGamma = 0, neutralBeta = 45, maxTilt = 15) {
+  const deltaGamma = (gamma || 0) - neutralGamma;
+  const clampedGamma = clamp(deltaGamma, -maxTilt, maxTilt);
+  const normX = clampedGamma / maxTilt;
 
-  // Beta: pitch (typical holding angle ~45 deg, normalize delta)
-  const neutralBeta = 45;
-  const deltaBeta = (beta !== null && beta !== undefined ? beta : neutralBeta) - neutralBeta;
-  const clampedBeta = clamp(deltaBeta, -MAX_TILT, MAX_TILT);
-  const normY = clampedBeta / MAX_TILT;
+  const rawBeta = beta !== null && beta !== undefined ? beta : neutralBeta;
+  const deltaBeta = rawBeta - neutralBeta;
+  const clampedBeta = clamp(deltaBeta, -maxTilt, maxTilt);
+  const normY = clampedBeta / maxTilt;
 
   return { x: normX, y: normY };
 }
@@ -41,11 +39,22 @@ class MotionEngine {
     this.isReducedMotion = false;
     this.hasPointerMoved = false;
 
+    // Decoupled touch pan and gyro tilt so both work together seamlessly
+    this.touchPanX = 0;
+    this.touchPanY = 0;
+    this.touchBasePanX = 0;
+    this.touchBasePanY = 0;
+    this.gyroTiltX = 0;
+    this.gyroTiltY = 0;
+
+    // Relative gyro calibration
+    this.isCalibrated = false;
+    this.neutralGamma = 0;
+    this.neutralBeta = 45;
+
     this.isTouchDragging = false;
     this.touchStartX = 0;
     this.touchStartY = 0;
-    this.touchBaseTargetX = 0;
-    this.touchBaseTargetY = 0;
 
     this.listeners = new Set();
     this.animFrameId = null;
@@ -73,6 +82,10 @@ class MotionEngine {
         this.targetY = 0;
         this.currentX = 0;
         this.currentY = 0;
+        this.touchPanX = 0;
+        this.touchPanY = 0;
+        this.gyroTiltX = 0;
+        this.gyroTiltY = 0;
       }
     });
 
@@ -140,6 +153,9 @@ class MotionEngine {
     if (typeof window === 'undefined') return;
     window.addEventListener('deviceorientation', this._onDeviceOrientation, { passive: true });
     this.isGyroActive = true;
+    this.isCalibrated = false;
+    this.gyroTiltX = 0;
+    this.gyroTiltY = 0;
     this._dispatchStateChange();
   }
 
@@ -147,6 +163,11 @@ class MotionEngine {
     if (typeof window === 'undefined') return;
     window.removeEventListener('deviceorientation', this._onDeviceOrientation);
     this.isGyroActive = false;
+    this.isCalibrated = false;
+    this.gyroTiltX = 0;
+    this.gyroTiltY = 0;
+    this.targetX = this.touchPanX;
+    this.targetY = this.touchPanY;
     this._dispatchStateChange();
   }
 
@@ -160,7 +181,7 @@ class MotionEngine {
   }
 
   _onPointerMove(e) {
-    if (this.isReducedMotion || this.isGyroActive || this.isTouchDragging) return;
+    if (this.isReducedMotion || this.isTouchDragging) return;
     if (e.pointerType === 'touch') return;
     this.hasPointerMoved = true;
 
@@ -171,8 +192,10 @@ class MotionEngine {
     const x = (e.clientX - width / 2) / (width / 2);
     const y = (e.clientY - height / 2) / (height / 2);
 
-    this.targetX = clamp(x, -1, 1);
-    this.targetY = clamp(y, -1, 1);
+    this.touchPanX = clamp(x, -1, 1);
+    this.touchPanY = clamp(y, -1, 1);
+    this.targetX = clamp(this.touchPanX + this.gyroTiltX, -1, 1);
+    this.targetY = clamp(this.touchPanY + this.gyroTiltY, -1, 1);
   }
 
   _onTouchStart(e) {
@@ -180,8 +203,8 @@ class MotionEngine {
     this.isTouchDragging = true;
     this.touchStartX = e.touches[0].clientX;
     this.touchStartY = e.touches[0].clientY;
-    this.touchBaseTargetX = this.targetX;
-    this.touchBaseTargetY = this.targetY;
+    this.touchBasePanX = this.touchPanX;
+    this.touchBasePanY = this.touchPanY;
     this.hasPointerMoved = true;
   }
 
@@ -201,8 +224,11 @@ class MotionEngine {
     const normDeltaX = -(deltaX / 300);
     const normDeltaY = -(deltaY / 200);
 
-    this.targetX = clamp(this.touchBaseTargetX + normDeltaX, -1, 1);
-    this.targetY = clamp(this.touchBaseTargetY + normDeltaY, -1, 1);
+    this.touchPanX = clamp(this.touchBasePanX + normDeltaX, -1, 1);
+    this.touchPanY = clamp(this.touchBasePanY + normDeltaY, -1, 1);
+
+    this.targetX = clamp(this.touchPanX + this.gyroTiltX, -1, 1);
+    this.targetY = clamp(this.touchPanY + this.gyroTiltY, -1, 1);
   }
 
   _onTouchEnd() {
@@ -211,9 +237,25 @@ class MotionEngine {
 
   _onDeviceOrientation(e) {
     if (this.isReducedMotion || !this.isGyroActive) return;
-    const { x, y } = normalizeOrientation(e.gamma, e.beta);
-    this.targetX = x;
-    this.targetY = y;
+
+    // Calibrate neutral angle on first event after gyro activation
+    if (!this.isCalibrated) {
+      this.neutralGamma = e.gamma || 0;
+      this.neutralBeta = e.beta !== null && e.beta !== undefined ? e.beta : 45;
+      this.isCalibrated = true;
+    }
+
+    const MAX_TILT = 22; // Comfortable tilt range
+    const deltaGamma = (e.gamma || 0) - this.neutralGamma;
+    const currentBeta = e.beta !== null && e.beta !== undefined ? e.beta : this.neutralBeta;
+    const deltaBeta = currentBeta - this.neutralBeta;
+
+    this.gyroTiltX = clamp(deltaGamma / MAX_TILT, -1, 1);
+    this.gyroTiltY = clamp(deltaBeta / MAX_TILT, -1, 1);
+
+    // Harmoniously combine touch drag position + gyro tilt
+    this.targetX = clamp(this.touchPanX + this.gyroTiltX, -1, 1);
+    this.targetY = clamp(this.touchPanY + this.gyroTiltY, -1, 1);
   }
 
   _onVisibilityChange() {
@@ -231,10 +273,12 @@ class MotionEngine {
       this.currentX = 0;
       this.currentY = 0;
     } else {
-      // If gyro is off and mouse is idle, apply gentle ambient breathing drift
+      // If gyro is off and pointer hasn't moved, apply gentle ambient breathing drift
       if (!this.isGyroActive && !this.hasPointerMoved) {
-        this.targetX = Math.sin(timestamp * 0.0006) * 0.25;
-        this.targetY = Math.cos(timestamp * 0.0008) * 0.2;
+        this.touchPanX = Math.sin(timestamp * 0.0006) * 0.25;
+        this.touchPanY = Math.cos(timestamp * 0.0008) * 0.2;
+        this.targetX = this.touchPanX;
+        this.targetY = this.touchPanY;
       }
 
       // Smooth LERP interpolation
