@@ -57,35 +57,29 @@
   <main id="viewport-container" class="viewport-container" aria-label="Kamar Tidur 2.5D Interaktif">
     <div id="scene-stage" class="scene-stage">
       
-      <!-- Layer 1: Far Sky & Window Rain -->
-      <div class="layer layer-sky" data-depth="0.02" aria-hidden="true">
+      <!-- Layer 1: Far Sky & Window Rain (Depth 0.015) -->
+      <div class="layer layer-sky" data-depth="0.015" aria-hidden="true">
         <div class="sky-backdrop"></div>
         <div class="rain-canvas-overlay" id="rain-particles"></div>
       </div>
 
-      <!-- Layer 2: Room Architecture & Background Illustration -->
-      <div class="layer layer-room" data-depth="0.06" aria-hidden="true">
+      <!-- Layer 2: Empty Base Room Architecture (Depth 0.03) -->
+      <div class="layer layer-room" data-depth="0.03" aria-hidden="true">
         <picture class="room-picture">
-          <source srcset="./assets/images/room/bedroom_base.webp" type="image/webp">
-          <img src="./assets/images/room/bedroom_base.jpg" alt="Kamar tidur anime yang hangat dan nyaman di malam hari" class="room-image" draggable="false">
+          <source srcset="./assets/images/room/room_empty.webp" type="image/webp">
+          <img src="./assets/images/room/room_empty.jpg" alt="Kamar tidur anime yang hangat dan nyaman di malam hari" class="room-image" draggable="false">
         </picture>
         <!-- Warm ambient room glow overlay -->
         <div class="room-ambient-light"></div>
       </div>
 
-      <!-- Layer 3: Interactive Furniture & Dynamic Elements -->
-      <div class="layer layer-furniture" data-depth="0.06">
-        
-        <!-- Lamp Light Dynamic Bloom -->
-        <div id="lamp-bloom" class="lamp-bloom active" aria-hidden="true"></div>
-
-        <!-- Stitch Plush Figure on the Bed -->
-        <div id="stitch-companion" class="stitch-companion" aria-hidden="true">
+      <!-- Layer 3: Interactive Object 1 — Bed (Depth 0.065) -->
+      <div class="layer layer-object layer-bed" data-depth="0.065">
+        <div id="obj-bed-wrap" class="scene-object obj-bed" aria-hidden="true">
           <picture>
-            <source srcset="./assets/images/objects/stitch_plush.webp" type="image/webp">
-            <img src="./assets/images/objects/stitch_plush.png" alt="Boneka Stitch di atas kasur" class="stitch-sprite" draggable="false">
+            <source srcset="./assets/images/objects/obj_bed.webp" type="image/webp">
+            <img src="./assets/images/objects/obj_bed.png" alt="Tempat tidur kayu yang hangat dan empuk" class="object-sprite" draggable="false">
           </picture>
-          <div class="plush-heart-burst" id="plush-heart-burst"></div>
         </div>
 
         <!-- Cozy Blanket Wave Overlay for "kita istirahat yu" interaction -->
@@ -93,11 +87,6 @@
           <div class="blanket-glow-wave"></div>
         </div>
 
-      </div>
-
-      <!-- Layer 4: Semantic Interactive Hotspots (Exact 5 Objects) -->
-      <div class="layer layer-hotspots" data-depth="0.06" role="region" aria-label="Objek Interaktif di Kamar">
-        
         <!-- 1. Bed Hotspot -->
         <button id="hotspot-bed" class="hotspot hotspot-bed" data-id="bed" aria-label="Kasur: Istirahat tanpa rasa bersalah" aria-haspopup="dialog" aria-expanded="false">
           <span class="hotspot-beacon" aria-hidden="true">
@@ -109,18 +98,17 @@
             <span class="tooltip-sub">istirahat sebentar</span>
           </span>
         </button>
+      </div>
 
-        <!-- 2. Letter Hotspot -->
-        <button id="hotspot-letter" class="hotspot hotspot-letter" data-id="letter" aria-label="Surat di meja samping: Surat dariku untukmu" aria-haspopup="dialog" aria-expanded="false">
-          <span class="hotspot-beacon" aria-hidden="true">
-            <span class="beacon-pulse"></span>
-            <span class="beacon-core"></span>
-          </span>
-          <span class="hotspot-tooltip" aria-hidden="true">
-            <span class="tooltip-title">Surat Dari Aku</span>
-            <span class="tooltip-sub">baca surat</span>
-          </span>
-        </button>
+      <!-- Layer 4: Interactive Object 2 — Stitch Plush on Bed (Depth 0.08) -->
+      <div class="layer layer-object layer-plush" data-depth="0.08">
+        <div id="stitch-companion" class="scene-object stitch-companion" aria-hidden="true">
+          <picture>
+            <source srcset="./assets/images/objects/obj_stitch.webp" type="image/webp">
+            <img src="./assets/images/objects/obj_stitch.png" alt="Boneka Stitch di atas kasur" class="stitch-sprite object-sprite" draggable="false">
+          </picture>
+          <div class="plush-heart-burst" id="plush-heart-burst"></div>
+        </div>
 
         <!-- 3. Plush Hotspot -->
         <button id="hotspot-plush" class="hotspot hotspot-plush" data-id="plush" aria-label="Boneka Stitch: Peluk bonekanya" aria-haspopup="dialog" aria-expanded="false">
@@ -133,18 +121,29 @@
             <span class="tooltip-sub">peluk aku</span>
           </span>
         </button>
+      </div>
 
-        <!-- 4. Laptop Hotspot -->
-        <button id="hotspot-laptop" class="hotspot hotspot-laptop" data-id="laptop" aria-label="Laptop: Pekerjaan bisa menunggu" aria-haspopup="dialog" aria-expanded="false">
-          <span class="hotspot-beacon" aria-hidden="true">
-            <span class="beacon-pulse"></span>
-            <span class="beacon-core"></span>
-          </span>
-          <span class="hotspot-tooltip" aria-hidden="true">
-            <span class="tooltip-title">Laptop Kerja</span>
-            <span class="tooltip-sub">pekerjaan bisa tunggu</span>
-          </span>
-        </button>
+      <!-- Layer 5: End Table / Nightstand Parallax Layer (Above Bed, Below Lamp & Letter — Depth 0.095) -->
+      <div class="layer layer-endtable" data-depth="0.095" aria-hidden="true">
+        <div id="obj-endtable-wrap" class="scene-object obj-endtable">
+          <picture>
+            <source srcset="./assets/images/objects/obj_endtable.webp" type="image/webp">
+            <img src="./assets/images/objects/obj_endtable.png" alt="Meja samping tempat tidur" class="object-sprite" draggable="false">
+          </picture>
+        </div>
+      </div>
+
+      <!-- Layer 6: Interactive Object 3 — Bedside Lamp on End Table (Depth 0.102) -->
+      <div class="layer layer-object layer-lamp" data-depth="0.102">
+        <!-- Lamp Light Dynamic Bloom -->
+        <div id="lamp-bloom" class="lamp-bloom active" aria-hidden="true"></div>
+
+        <div id="obj-lamp-wrap" class="scene-object obj-lamp" aria-hidden="true">
+          <picture>
+            <source srcset="./assets/images/objects/obj_lamp.webp" type="image/webp">
+            <img src="./assets/images/objects/obj_lamp.png" alt="Lampu meja tidur hangat" class="object-sprite" draggable="false">
+          </picture>
+        </div>
 
         <!-- 5. Bedside Lamp Hotspot -->
         <button id="hotspot-lamp" class="hotspot hotspot-lamp" data-id="lamp" aria-label="Lampu meja: Secercah cahaya harapan" aria-haspopup="dialog" aria-expanded="false">
@@ -157,11 +156,54 @@
             <span class="tooltip-sub">cahaya hangat</span>
           </span>
         </button>
-
       </div>
 
-      <!-- Layer 5: Foreground Atmosphere & Floating Dust Embers (Non-interactive) -->
-      <div class="layer layer-foreground" data-depth="0.14" aria-hidden="true">
+      <!-- Layer 7: Interactive Object 4 — Letter on End Table (Depth 0.108) -->
+      <div class="layer layer-object layer-letter" data-depth="0.108">
+        <div id="obj-letter-wrap" class="scene-object obj-letter" aria-hidden="true">
+          <picture>
+            <source srcset="./assets/images/objects/obj_letter.webp" type="image/webp">
+            <img src="./assets/images/objects/obj_letter.png" alt="Surat dan pena di atas meja samping" class="object-sprite" draggable="false">
+          </picture>
+        </div>
+
+        <!-- 2. Letter Hotspot -->
+        <button id="hotspot-letter" class="hotspot hotspot-letter" data-id="letter" aria-label="Surat di meja samping: Surat dariku untukmu" aria-haspopup="dialog" aria-expanded="false">
+          <span class="hotspot-beacon" aria-hidden="true">
+            <span class="beacon-pulse"></span>
+            <span class="beacon-core"></span>
+          </span>
+          <span class="hotspot-tooltip" aria-hidden="true">
+            <span class="tooltip-title">Surat Dari Aku</span>
+            <span class="tooltip-sub">baca surat</span>
+          </span>
+        </button>
+      </div>
+
+      <!-- Layer 8: Interactive Object 5 — Laptop on Study Desk (Depth 0.10) -->
+      <div class="layer layer-object layer-laptop" data-depth="0.10">
+        <div id="obj-laptop-wrap" class="scene-object obj-laptop" aria-hidden="true">
+          <picture>
+            <source srcset="./assets/images/objects/obj_laptop.webp" type="image/webp">
+            <img src="./assets/images/objects/obj_laptop.png" alt="Laptop di meja kerja" class="object-sprite" draggable="false">
+          </picture>
+        </div>
+
+        <!-- 4. Laptop Hotspot -->
+        <button id="hotspot-laptop" class="hotspot hotspot-laptop" data-id="laptop" aria-label="Laptop: Pekerjaan bisa menunggu" aria-haspopup="dialog" aria-expanded="false">
+          <span class="hotspot-beacon" aria-hidden="true">
+            <span class="beacon-pulse"></span>
+            <span class="beacon-core"></span>
+          </span>
+          <span class="hotspot-tooltip" aria-hidden="true">
+            <span class="tooltip-title">Laptop Kerja</span>
+            <span class="tooltip-sub">pekerjaan bisa tunggu</span>
+          </span>
+        </button>
+      </div>
+
+      <!-- Layer 9: Foreground Atmosphere & Floating Dust Embers (Depth 0.16) -->
+      <div class="layer layer-foreground" data-depth="0.16" aria-hidden="true">
         <div class="dust-motes-container" id="dust-motes"></div>
         <div class="vignette-overlay"></div>
       </div>

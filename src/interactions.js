@@ -80,6 +80,8 @@ export function openModal(id, triggerElement = null) {
     return;
   }
 
+  pulseObjectSprite(id);
+
   // Setup header
   if (modalBadge) modalBadge.textContent = hotspot ? hotspot.label : 'The Safe Place';
   if (modalTitle) modalTitle.textContent = msg.title;
@@ -205,6 +207,25 @@ export function isModalOpen() {
 }
 
 /**
+ * Plays a subtle bounce/lift animation on the separated object sprite when activated
+ */
+function pulseObjectSprite(id) {
+  const map = {
+    bed: 'obj-bed-wrap',
+    letter: 'obj-letter-wrap',
+    plush: 'stitch-companion',
+    laptop: 'obj-laptop-wrap',
+    lamp: 'obj-lamp-wrap'
+  };
+  const el = document.getElementById(map[id]);
+  if (!el) return;
+  el.classList.add('is-interacting');
+  setTimeout(() => {
+    el.classList.remove('is-interacting');
+  }, 650);
+}
+
+/**
  * Object Micro-Interactions
  */
 function handleActionClick(id) {
@@ -228,6 +249,7 @@ function handleActionClick(id) {
 
 export function triggerBedAction() {
   const blanket = document.getElementById('blanket-warmth');
+  pulseObjectSprite('bed');
   if (blanket) {
     blanket.classList.add('active');
     setTimeout(() => {
@@ -261,6 +283,13 @@ export function triggerPlushAction() {
 }
 
 export function triggerLaptopAction() {
+  const laptop = document.getElementById('obj-laptop-wrap');
+  if (laptop) {
+    laptop.classList.add('is-closed');
+    setTimeout(() => {
+      laptop.classList.remove('is-closed');
+    }, 6000);
+  }
   showToast('Kerjaan sudah ditutup & boleh menunggu besok. Kamu prioritas sekarang 💻💤');
   closeModal();
 }

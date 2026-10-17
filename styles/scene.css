@@ -119,21 +119,74 @@
   opacity: 0;
 }
 
-/* Layer 3: Interactive Furniture Details & Plush */
-.layer-furniture {
-  z-index: 3;
+/* Separated Interactive & Furniture Layers (Layers 3 to 8) */
+.layer-bed { z-index: 3; }
+.layer-plush { z-index: 4; }
+.layer-endtable { z-index: 5; }
+.layer-lamp { z-index: 6; }
+.layer-letter { z-index: 7; }
+.layer-laptop { z-index: 8; }
+
+.scene-object {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), filter 0.8s ease, opacity 0.8s ease;
+  will-change: transform, filter;
 }
 
-/* Dynamic Lamp Light Bloom */
+.object-sprite {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* 1. Bed Object Layer (Behind End Table) */
+.obj-bed {
+  left: 68.5%;
+  top: 69.2%;
+  width: 48.5%;
+  filter: drop-shadow(0 18px 28px rgba(8, 12, 22, 0.75));
+}
+
+/* 2. Stitch Plush Object Layer (On Bed) */
+.stitch-companion {
+  left: 59.2%;
+  top: 55.8%;
+  width: 8.8%;
+  z-index: 5;
+  filter: drop-shadow(0 12px 18px rgba(10, 15, 26, 0.78));
+  animation: plush-breathe 4.5s ease-in-out infinite;
+}
+
+/* 3. End Table / Nightstand Layer (Above Bed, Below Lamp & Letter) */
+.obj-endtable {
+  left: 42.2%;
+  top: 78.0%;
+  width: 16.2%;
+  filter: drop-shadow(0 16px 26px rgba(6, 10, 20, 0.82));
+}
+
+/* 4. Bedside Lamp Object Layer & Dynamic Bloom (On Top of End Table) */
+.obj-lamp {
+  left: 41.8%;
+  top: 57.8%;
+  width: 6.2%;
+  filter: drop-shadow(0 0 18px rgba(255, 190, 110, 0.42)) drop-shadow(0 8px 14px rgba(8, 12, 22, 0.78));
+}
+
 .lamp-bloom {
   position: absolute;
-  left: 42.2%;
-  top: 57.3%;
+  left: 41.8%;
+  top: 56.2%;
   transform: translate(-50%, -50%);
-  width: 22%;
+  width: 24%;
   aspect-ratio: 1 / 1;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 195, 115, 0.45) 0%, rgba(255, 184, 108, 0.18) 40%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 195, 115, 0.5) 0%, rgba(255, 184, 108, 0.2) 42%, transparent 72%);
   filter: blur(12px);
   pointer-events: none;
   opacity: 1;
@@ -147,30 +200,46 @@
   transform: translate(-50%, -50%) scale(0.6);
 }
 
-/* Stitch Plush Figure */
-.stitch-companion {
-  position: absolute;
-  left: 56.0%;
-  top: 55.3%;
-  transform: translate(-50%, -50%);
-  width: 11.5%;
-  aspect-ratio: 1 / 1;
-  pointer-events: none;
-  z-index: 5;
-  filter: drop-shadow(0 14px 22px rgba(10, 15, 26, 0.75));
-  animation: plush-breathe 4.5s ease-in-out infinite;
-  transition: filter 1.2s ease;
+/* 5. Laptop Object Layer (Aligned to Study Desk Perspective) */
+.obj-laptop {
+  left: 87.8%;
+  top: 50.8%;
+  width: 11.4%;
+  filter: drop-shadow(0 8px 14px rgba(8, 12, 22, 0.78)) drop-shadow(0 0 14px rgba(145, 198, 255, 0.25));
 }
 
-.scene-stage.is-dimmed .stitch-companion {
-  filter: drop-shadow(0 14px 22px rgba(10, 15, 26, 0.85)) brightness(0.62) saturate(0.85);
+.obj-laptop.is-closed {
+  transform: translate(-50%, -50%) scaleY(0.88) translateY(4%);
+  filter: drop-shadow(0 8px 14px rgba(8, 12, 22, 0.85)) brightness(0.65);
 }
 
-.stitch-sprite {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
+/* 6. Letter Object Layer (On Top of End Table) */
+.obj-letter {
+  left: 42.4%;
+  top: 67.2%;
+  width: 7.4%;
+  filter: drop-shadow(0 5px 10px rgba(8, 12, 22, 0.72));
+}
+
+/* Subtle interactive lift & warm rim glow when hovering/focusing a layer's hotspot */
+.layer-object:has(.hotspot:hover) .scene-object,
+.layer-object:has(.hotspot:focus-visible) .scene-object,
+.scene-object.is-interacting {
+  transform: translate(-50%, -52%) scale(1.04);
+  filter: drop-shadow(0 14px 24px rgba(8, 12, 22, 0.85)) drop-shadow(0 0 14px rgba(255, 196, 118, 0.48));
+}
+
+/* Dimmed Room State for Separated Objects */
+.scene-stage.is-dimmed .obj-bed,
+.scene-stage.is-dimmed .stitch-companion,
+.scene-stage.is-dimmed .obj-endtable,
+.scene-stage.is-dimmed .obj-letter,
+.scene-stage.is-dimmed .obj-lamp {
+  filter: drop-shadow(0 14px 22px rgba(5, 8, 16, 0.88)) brightness(0.52) contrast(1.08) saturate(0.82);
+}
+
+.scene-stage.is-dimmed .obj-laptop {
+  filter: drop-shadow(0 10px 18px rgba(5, 8, 16, 0.88)) drop-shadow(0 0 18px rgba(145, 198, 255, 0.35)) brightness(0.76);
 }
 
 /* Blanket Warmth Overlay ("kita istirahat yu") */
@@ -198,17 +267,11 @@
   animation: blanket-pulse 3s ease-in-out infinite;
 }
 
-/* Layer 4: Hotspots Layer */
-.layer-hotspots {
-  z-index: 10;
-  pointer-events: auto;
-}
-
-/* Base Hotspot Button */
+/* Base Hotspot Button (inside each object layer) */
 .hotspot {
   position: absolute;
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   transform: translate(-50%, -50%);
   background: transparent;
   border: none;
@@ -218,6 +281,7 @@
   justify-content: center;
   outline: none;
   z-index: 12;
+  pointer-events: auto;
   transition: transform var(--transition-fast);
 }
 
@@ -305,30 +369,30 @@
   transform: translateX(-50%) translateY(0);
 }
 
-/* Individual Hotspot Coords (Anchored to 2.5D Room Elements) */
+/* Individual Hotspot Coords (Anchored directly to each separated object sprite) */
 .hotspot-lamp {
-  left: 42.2%;
-  top: 57.3%;
+  left: 41.8%;
+  top: 56.5%;
 }
 
 .hotspot-letter {
-  left: 41.8%;
-  top: 69.7%;
+  left: 42.4%;
+  top: 67.2%;
 }
 
 .hotspot-plush {
-  left: 56.0%;
-  top: 55.3%;
+  left: 59.2%;
+  top: 55.8%;
 }
 
 .hotspot-bed {
-  left: 74.1%;
-  top: 71.6%;
+  left: 72.0%;
+  top: 70.0%;
 }
 
 .hotspot-laptop {
-  left: 87.9%;
-  top: 51.4%;
+  left: 87.8%;
+  top: 50.8%;
 }
 
 /* Layer 5: Foreground Dust Motes & Vignette */
