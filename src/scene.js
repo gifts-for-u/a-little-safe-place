@@ -52,16 +52,16 @@ function applyParallaxTransforms(coords) {
 
   for (let i = 0; i < layers.length; i++) {
     const layer = layers[i];
-    const depthStr = layer.getAttribute('data-depth') || '0.06';
+    const depthStr = layer.getAttribute('data-depth') || '0.03';
     const depth = parseFloat(depthStr);
 
-    // Subtle 2.5D depth parallax relative to room depth (0.06)
-    // Layers with depth 0.06 (room, furniture, hotspots) have 0 relative delta and stay 100% locked!
-    // Layer with depth 0.02 (sky outside window) moves with depth parallax.
-    // Layer with depth 0.12 (foreground dust) moves with foreground parallax.
-    const relDepth = depth - 0.06;
-    const parallaxX = isPortrait ? -x * relDepth * 120 : -x * depth * 220;
-    const parallaxY = isPortrait ? -y * relDepth * 80 : -y * depth * 140;
+    // Multi-layer 2.5D depth parallax relative to the base room depth (0.03):
+    // - room (0.03) forms the architectural anchor
+    // - bed (0.065), plush (0.085), lamp (0.095), laptop (0.10), letter (0.11) shift with increasing depth
+    // - foreground dust (0.16) floats closest to the viewer
+    const relDepth = depth - 0.03;
+    const parallaxX = isPortrait ? -x * relDepth * 280 : -x * depth * 320;
+    const parallaxY = isPortrait ? -y * relDepth * 160 : -y * depth * 200;
 
     const totalX = Math.round((basePanX + parallaxX) * 10) / 10;
     const totalY = Math.round((basePanY + parallaxY) * 10) / 10;

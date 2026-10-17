@@ -19,8 +19,7 @@ export const HOTSPOTS = Object.freeze([
     hint: 'istirahat sebentar',
     actionLabel: 'kita istirahat yu',
     actionId: 'action-bed-rest',
-    // Exact percentage of the 1376x768 artwork
-    coords: { x: 74.1, y: 71.6 }
+    coords: { x: 72.0, y: 70.0 }
   },
   {
     id: 'letter',
@@ -28,7 +27,7 @@ export const HOTSPOTS = Object.freeze([
     label: 'Surat',
     hint: 'sebuah surat untukmu',
     actionLabel: null,
-    coords: { x: 41.8, y: 69.7 }
+    coords: { x: 42.2, y: 67.2 }
   },
   {
     id: 'plush',
@@ -37,7 +36,7 @@ export const HOTSPOTS = Object.freeze([
     hint: 'butuh pelukan?',
     actionLabel: 'Peluk bonekanya',
     actionId: 'action-hug-plush',
-    coords: { x: 56.0, y: 55.3 }
+    coords: { x: 59.2, y: 55.8 }
   },
   {
     id: 'laptop',
@@ -46,7 +45,7 @@ export const HOTSPOTS = Object.freeze([
     hint: 'pekerjaan bisa menunggu',
     actionLabel: 'Tutup kerjaan hari ini',
     actionId: 'action-close-work',
-    coords: { x: 87.9, y: 51.4 }
+    coords: { x: 86.5, y: 48.8 }
   },
   {
     id: 'lamp',
@@ -55,7 +54,7 @@ export const HOTSPOTS = Object.freeze([
     hint: 'secercah cahaya hangat',
     actionLabel: 'Ubah suasana cahaya',
     actionId: 'action-toggle-lamp',
-    coords: { x: 42.2, y: 57.3 }
+    coords: { x: 41.5, y: 56.5 }
   }
 ]);
 
